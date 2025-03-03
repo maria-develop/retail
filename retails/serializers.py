@@ -4,8 +4,12 @@ from .models import Retail, Product
 
 
 class RetailSerializer(ModelSerializer):
+    """
+    Сериализатор для модели Retail.
+    Используется для преобразования объектов Retail в JSON и обратно.
+    """
     name = CharField(
-        validators=[TitleValidator(field="name")],  # Используем поле name вместо title
+        validators=[TitleValidator(field="name")],
     )
 
     class Meta:
@@ -15,8 +19,12 @@ class RetailSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
+    """
+    Сериализатор для модели Product.
+    Используется для преобразования объектов Product в JSON и обратно.
+    """
     name = CharField(
-        validators=[TitleValidator(field="name")],  # Используем поле name вместо title
+        validators=[TitleValidator(field="name")],
     )
 
     class Meta:

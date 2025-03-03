@@ -5,6 +5,11 @@ from .models import Retail, Product
 
 @admin.register(Retail)
 class RetailAdmin(admin.ModelAdmin):
+    """
+    Админ-панель для модели Retail.
+    Позволяет управлять объектами сети (заводами, розничными сетями, ИП).
+    """
+
     list_display = ('id', 'name', 'supplier', 'debt', 'created_at')
     list_filter = ('city',)  # Фильтр по городу
     actions = ['clear_debt']  # Регистрация действия
@@ -27,6 +32,11 @@ class RetailAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    """
+    Админ-панель для модели Product.
+    Позволяет управлять продуктами, связанными с объектами сети.
+    """
+
     list_display = ('id', 'name', 'supplier', 'model', 'release_date')
     list_filter = ('name', 'supplier',)
     search_fields = ("name",)

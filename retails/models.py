@@ -2,6 +2,10 @@ from django.db import models
 
 
 class Retail(models.Model):
+    """
+    Модель для представления объектов сети (заводов, розничных сетей, ИП).
+    Каждый объект имеет тип, название, контактные данные, поставщика и задолженность.
+    """
     FACTORY = 'factory'
     RETAIL = 'retail'
     ENTREPRENEUR = 'entrepreneur'
@@ -41,6 +45,10 @@ class Retail(models.Model):
         return f"{self.name} ({self.email})"
 
     def get_level(self):
+        """
+        Возвращает уровень иерархии объекта.
+        Завод всегда имеет уровень 0, розничная сеть — 1, ИП — 2 и т.д.
+        """
         level = 0
         current = self.supplier
         while current:
@@ -54,6 +62,10 @@ class Retail(models.Model):
 
 
 class Product(models.Model):
+    """
+    Модель для представления продуктов, связанных с объектами сети.
+    Каждый продукт имеет название, модель, дату выхода на рынок и поставщика.
+    """
     supplier = models.ForeignKey(Retail, related_name='products', on_delete=models.CASCADE, verbose_name="Поставщик")
     name = models.CharField(max_length=255, verbose_name="Название продукта")
     model = models.CharField(max_length=255, verbose_name="Модель")

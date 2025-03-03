@@ -8,6 +8,10 @@ from .paginations import RetailPageNumberPagination, ProductPageNumberPagination
 
 
 class RetailListAPIView(ListAPIView):
+    """
+    API для получения списка объектов Retail.
+    Поддерживает фильтрацию по стране.
+    """
     queryset = Retail.objects.all()
     serializer_class = RetailSerializer
     pagination_class = RetailPageNumberPagination

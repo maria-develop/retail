@@ -3,7 +3,10 @@ from rest_framework.serializers import ValidationError
 
 
 class TitleValidator:
-    """Проверка: поле title должно содержать только разрешенные символы."""
+    """
+    Валидатор для проверки поля name.
+    Поле должно содержать только буквы, цифры, точки, дефисы, запятые и пробелы.
+    """
 
     def __init__(self, field):
         self.field = field
