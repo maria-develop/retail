@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
@@ -10,6 +11,8 @@ class RetailListAPIView(ListAPIView):
     queryset = Retail.objects.all()
     serializer_class = RetailSerializer
     pagination_class = RetailPageNumberPagination
+    filter_backends = [DjangoFilterBackend]  # Подключаем фильтрацию
+    filterset_fields = ['country']  # Указываем поле для фильтрации
 
 
 class RetailRetrieveAPIView(RetrieveAPIView):

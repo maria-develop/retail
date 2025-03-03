@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
+from retails.validators import TitleValidator
 
 from retails.models import Retail, Product
 from users.models import User
@@ -193,6 +195,7 @@ class ProductTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Product.objects.all().count(), 0)
 
+
 class RetailSerializerTest(APITestCase):
     def setUp(self):
         self.factory = Retail.objects.create(
@@ -249,11 +252,6 @@ class ProductSerializerTest(APITestCase):
         self.assertEqual(data["supplier"], self.factory.id)
 
 
-from rest_framework.exceptions import ValidationError
-from rest_framework.test import APITestCase
-from retails.validators import TitleValidator
-
-
 class TitleValidatorTest(APITestCase):
     def test_title_validator_valid(self):
         """Тест валидатора с корректными данными."""
@@ -270,3 +268,40 @@ class TitleValidatorTest(APITestCase):
         value = "Invalid@Name"
         with self.assertRaises(ValidationError):
             validator(value)
+
+
+class RetailFilterTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(email="test@example.com", is_active=True)
+        self.user.set_password("testpassword")
+        self.user.save()
+
+        self.factory = Retail.objects.create(
+            type=Retail.FACTORY,
+            name="Factory 1",
+            email="factory1@example.com",
+            country="Country 1",
+            city="City 1",
+            street="Street 1",
+            house_number="1",
+        )
+        self.retail = Retail.objects.create(
+            type=Retail.RETAIL,
+            name="Retail 1",
+            email="retail1@example.com",
+            country="Country 2",
+            city="City 2",
+            street="Street 2",
+            house_number="2",
+            supplier=self.factory,
+        )
+
+        self.client.force_authenticate(user=self.user)
+
+    def test_filter_by_country(self):
+        """Тест фильтрации объектов Retail по стране."""
+        url = reverse("retails:retail_list")
+        response = self.client.get(url, {"country": "Country 1"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["country"], "Country 1")

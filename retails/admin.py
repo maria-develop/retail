@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from .models import Retail, Product
 
+
 @admin.register(Retail)
 class RetailAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'supplier', 'debt', 'created_at')
@@ -22,6 +23,7 @@ class RetailAdmin(admin.ModelAdmin):
             return
         queryset.update(debt=0)
     clear_debt.short_description = "Clear debt for selected retails"
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
