@@ -7,6 +7,7 @@ class RetailSerializer(ModelSerializer):
     """
     Сериализатор для модели Retail.
     Используется для преобразования объектов Retail в JSON и обратно.
+    Поле 'debt' доступно только для чтения.
     """
     name = CharField(
         validators=[TitleValidator(field="name")],

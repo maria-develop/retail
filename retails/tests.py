@@ -305,3 +305,42 @@ class RetailFilterTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["country"], "Country 1")
+
+
+class RetailUpdateTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(email="test@example.com", is_active=True)
+        self.user.set_password("testpassword")
+        self.user.save()
+
+        self.factory = Retail.objects.create(
+            type=Retail.FACTORY,
+            name="Factory 1",
+            email="factory1@example.com",
+            country="Country 1",
+            city="City 1",
+            street="Street 1",
+            house_number="1",
+        )
+        self.retail = Retail.objects.create(
+            type=Retail.RETAIL,
+            name="Retail 1",
+            email="retail1@example.com",
+            country="Country 2",
+            city="City 2",
+            street="Street 2",
+            house_number="2",
+            supplier=self.factory,
+            debt=100.50,
+        )
+
+        self.client.force_authenticate(user=self.user)
+
+    def test_update_debt(self):
+        """Тест запрета на обновление поля debt через API."""
+        url = reverse("retails:retail_update", args=(self.retail.pk,))
+        data = {"debt": 200.00}
+        response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.retail.refresh_from_db()
+        self.assertEqual(self.retail.debt, 100.50)  # Поле debt не изменилось

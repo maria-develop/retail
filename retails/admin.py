@@ -23,11 +23,15 @@ class RetailAdmin(admin.ModelAdmin):
 
     # Admin action для очистки задолженности
     def clear_debt(self, request, queryset):
+        """
+        Admin action для очистки задолженности у выбранных объектов.
+        Если у пользователя нет прав, выводит сообщение об ошибке.
+        """
         if not request.user.has_perm('retails.can_clear_debt'):
-            self.message_user(request, "You don't have permission to clear debts.", messages.ERROR)
+            self.message_user(request, "У вас нет прав для очистки задолженности.", messages.ERROR)
             return
-        queryset.update(debt=0)
-    clear_debt.short_description = "Clear debt for selected retails"
+        queryset.update(debt=0)  # Обнуляем задолженность
+    clear_debt.short_description = "Очистить задолженность"
 
 
 @admin.register(Product)
